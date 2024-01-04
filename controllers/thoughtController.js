@@ -26,7 +26,7 @@ module.exports = {
   // Create a thought
   async createThought(req, res) {
     try {
-      const Thought = await Thought.create(req.body);
+      const thought = await Thought.create(req.body);
       const post = await Post.findOneAndUpdate(
         { _id: req.body.postId },
         { $push: { thoughts: thought._id } },
