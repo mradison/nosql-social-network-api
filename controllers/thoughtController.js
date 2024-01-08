@@ -1,4 +1,4 @@
-const { Post, Thought } = require('../models');
+const { User, Thought } = require('../models');
 
 module.exports = {
   async getThoughts(req, res) {
@@ -27,16 +27,16 @@ module.exports = {
   async createThought(req, res) {
     try {
       const thought = await Thought.create(req.body);
-      const post = await Post.findOneAndUpdate(
-        { _id: req.body.postId },
+      const user = await User.findOneAndUpdate(
+        { _id: req.body.userId },
         { $push: { thoughts: thought._id } },
         { new: true }
       );
 
-      if (!post) {
+      if (!user) {
         return res
           .status(404)
-          .json({ message: 'thought created, but no posts with this ID' });
+          .json({ message: 'thought created, but no users with this ID' });
       }
 
       res.json({ message: 'thought created' });
@@ -44,4 +44,41 @@ module.exports = {
       console.error(err);
     }
   },
+  async updateThought(req, res) {
+    try {
+      const newThought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $set: req.body },
+        { new: true}
+      );
+      if (!newThought) {
+        return res
+          .status(404)
+          .json({ message: 'thought created, but no thought with this ID' });
+      };
+      res.json(newThought)
+    } catch (err) {
+      console.error(err);
+    }
+
+  },
+
+  async removeThought(req, res) {
+    try {
+      const delThought = await Thought.findOneAndDelete(
+        { _id: req.params.thoughtId },
+        { $set: req.body },
+        { new: true}
+      );
+      if (!delThought) {
+        return res
+          .status(404)
+          .json({ message: 'thought not deleted, but no thought with this ID' });
+      };
+      res.json(delThought)
+    } catch (err) {
+      console.error(err);
+    }
+
+  }
 };
