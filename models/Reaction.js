@@ -1,26 +1,42 @@
+const { ObjectId } = require('bson');
 const { Schema, model } = require('mongoose');
 
 // Schema to create Post model
-const postSchema = new Schema(
+const reactionSchema = new Schema(
   {
-    text: String,
-    username: String,
-    thought: [{ type: Schema.Types.ObjectId, ref: 'thought' }],
+    reactionId: {
+      type: Schema.Types.ObjectId,
+      default: () => new Types.ObjectId(),
+    },
+
+    reactionBody: {
+      type: String,
+      required: true,
+      maxlength: 280
+    },
+
+    username: {
+      type: String,
+      required: true
+    },
+
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
   },
   {
     toJSON: {
-      virtuals: true,
+      getters: true,
     },
     id: false,
   }
+
 );
 
-// Create a virtual property `commentCount` that gets the amount of comments per post
-postSchema.virtual('thoughtCount').get(function () {
-  return this.thoughts.length;
-});
 
-// Initialize our Post model
-const Post = model('post', postSchema);
+
+// Initialize our Reaction model
+const Reaction = model('reaction', reactionSchema);
 
 module.exports = Post;
