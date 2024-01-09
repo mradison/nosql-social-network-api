@@ -32,4 +32,41 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  async updateUser(req, res) {
+    try {
+      const newUser = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $set: req.body },
+        { new: true}
+      );
+      if (!newUser) {
+        return res
+          .status(404)
+          .json({ message: 'no user with this ID' });
+      };
+      res.json(newUser)
+    } catch (err) {
+      console.error(err);
+    }
+
+  },
+
+  async removeUser(req, res) {
+    try {
+      const delUser = await User.findOneAndDelete(
+        { _id: req.params.userId },
+        { $set: req.body },
+        { new: true}
+      );
+      if (!delUser) {
+        return res
+          .status(404)
+          .json({ message: 'no user with this ID' });
+      };
+      res.json(delUser)
+    } catch (err) {
+      console.error(err);
+    }
+
+  }
 };
