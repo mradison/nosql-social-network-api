@@ -1,4 +1,4 @@
-const { User, Thought } = require('../models');
+const { User, Thought, Reaction } = require('../models');
 
 module.exports = {
   async getThoughts(req, res) {
@@ -104,7 +104,7 @@ module.exports = {
 
     async removeReaction(req, res) {
       try {
-        const delReaction = await Reaction.findOneAndRemove(
+        const delReaction = await Thought.findOneAndDelete(
           { _id: req.params.reactionId }, 
                 );
         if (!delReaction) {
