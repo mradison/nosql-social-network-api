@@ -80,5 +80,43 @@ module.exports = {
       console.error(err);
     }
 
-  }
-};
+  },
+
+  async addReaction(req, res) {
+    try {
+      const thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId }, 
+        { $addToSet: { reactions: req.body}},
+        { new: true}
+              );
+      if (!thought) {
+        return res.status(404).json({
+          message: 'Reaction created, but found no user with that ID',
+        });
+      }
+
+      res.json('Created the reaction');
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+    },
+
+    async removeReaction(req, res) {
+      try {
+        const delReaction = await Reaction.findOneAndRemove(
+          { _id: req.params.reactionId }, 
+                );
+        if (!delReaction) {
+          return res.status(404).json({
+            message: 'No reaction with that ID',
+          });
+        }
+  
+        res.json(delReaction);
+      } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+      }
+      }
+  };
